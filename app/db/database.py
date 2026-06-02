@@ -1,6 +1,6 @@
-from sqlalchemy import create_engine 
+from sqlalchemy import create_engine  
 from sqlalchemy.exc import OperationalError
-from sqlalchemy.orm import DeclarativeBase 
+from sqlalchemy.orm import DeclarativeBase , sessionmaker
 
 
 class base(DeclarativeBase):
@@ -18,4 +18,7 @@ except OperationalError  as err:
    print(err)
 
 
-
+SessionLocal = sessionmaker(
+   bind = engine,
+   autoflush= False,
+)

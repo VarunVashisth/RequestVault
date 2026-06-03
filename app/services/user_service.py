@@ -1,13 +1,13 @@
 from ..db_models.user import user
-from sqlalchemy.orm import query 
 from pwdlib import PasswordHash
 import secrets
 
 password_hash = PasswordHash.recommended()
 
 class userservices():
-
-    def validate_username(username:str , email:str, db) :
+    
+    @staticmethod
+    def validate_user_registration(username:str , email:str, db) :
           
         existing_username = (
             db.query(user).filter(user.username == username).first()
@@ -25,30 +25,36 @@ class userservices():
         
         return("username and email are available")        
     
-
+    @staticmethod
     def create_user(user_name:str , _email_:str , password:str , db) :
       
       pass_hash = password_hash.hash(password)
-      try:
-        new_user = user(username = user_name , email = _email_ , password_hash = pass_hash)
-        db.add(new_user)
-        db.commit()
-
-        user_id = new_user.id
-        return user_id
       
-      finally:
-
-        db.close()
+      new_user = user(username = user_name , email = _email_ , password_hash = pass_hash)
+      db.add(new_user)
+      db.commit()  
+      db.refresh(new_user)
+      return new_user
+      
+      
 
         
-    
-    def api_generation(id:int , user_name:str , _email_:str , password:str , db):
+    @staticmethod
+    def api_generation(id:int , db):
 
-            
+        api_key = f"rv_{secrets.token_urlsafe(32)}"
+
+        update_user = db.get(user , id)
+
+        if update_user:
+           update_user.api_key = api_key
+           db.commit()
+           db.refresh(update_user)
+        else:
+           return("There has been some problem...")
 
          
-        pass
+        return update_user
     
     
     

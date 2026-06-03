@@ -2,20 +2,35 @@ from fastapi import APIRouter , Depends
 from sqlalchemy.orm import Session
 from ..db.dependency import get_db
 from ..SchemaModels.register_request import register_username 
+from ..SchemaModels.register_response import registered_username
 from ..services.user_service import userservices
 
 router = APIRouter()
 
-@router.post("/register")
+@router.post("/register" , response_model=registered_username)
 
 def create_user(user:register_username , db : Session = Depends(get_db) ) :
 
-    result = userservices.validate_username(user.username , user.email , db)
+    check = userservices.validate_user_registration(user.username , user.email , db)
+    
+    if check=="username and email are available" :
+        reg = userservices.create_user(user.username,user.email,user.password,db)
+    else:
+        return("Some problem in check and create_user")
+    
+    if reg:
+        api_gen = userservices.api_generation(reg.id , db)
+    else:
+        return("Some problem in api_gen")     
+    
+    return api_gen
 
     
 
-    return { 
-        "result": result
-    }
+
+
+    
+
+    
     
     

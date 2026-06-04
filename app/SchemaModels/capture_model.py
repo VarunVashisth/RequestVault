@@ -1,4 +1,5 @@
 from pydantic import BaseModel 
+from datetime import datetime
 
 #request body
 class capture_model(BaseModel):
@@ -12,8 +13,8 @@ class capture_response(BaseModel):
     
     endpoint : str
     status_code: int
-    response_time_ms:int
-    captured_at : int
+    response_time:int
+    created_at : datetime
 
 
     

@@ -17,7 +17,7 @@ def capture_request(request:capture_model  , db : Session = Depends(get_db) ) :
         if not check:
                 raise HTTPException(status_code=401 , detail="api_key mismatch") 
         
-        result = capture_service.capture(check.id , request.endpoint , request.status_code , request.response_time_ms)
+        result = capture_service.capture(check.id , request.endpoint , request.status_code , request.response_time_ms,db)
         
         return result
 

@@ -1,5 +1,5 @@
 from ..db_models.user import user
-from pwdlib import PasswordHash
+from pwdlib import PasswordHash 
 import secrets
 
 password_hash = PasswordHash.recommended()
@@ -55,6 +55,27 @@ class userservices():
 
          
         return update_user
+    
+    @staticmethod
+    def log_user(email:str , password:str , db):
+
+        log_user = (
+            db.query(user).filter(user.email == email ).first()
+        )
+
+        if not log_user:
+         return("user not found")
+
+        try:
+            password_hash.verify(password, log_user.password_hash)
+        except Exception :
+           return("invalid password")
+           
+        
+        return log_user
+
+
+
     
     
     

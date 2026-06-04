@@ -1,4 +1,4 @@
-from fastapi import APIRouter , Depends
+from fastapi import APIRouter , Depends , HTTPException
 from sqlalchemy.orm import Session
 from ..db.dependency import get_db
 from ..SchemaModels.register_request import register_username 
@@ -16,12 +16,12 @@ def create_user(user:register_username , db : Session = Depends(get_db) ) :
     if check=="username and email are available" :
         reg = userservices.create_user(user.username,user.email,user.password,db)
     else:
-        return("Some problem in check and create_user")
+        raise HTTPException(status_code=400 , detail=check)
     
     if reg:
         api_gen = userservices.api_generation(reg.id , db)
     else:
-        return("Some problem in api_gen")     
+        raise HTTPException( status_code=500 , detail="User Creation Failed")    
     
     return api_gen
 

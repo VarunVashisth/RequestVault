@@ -65,3 +65,15 @@ class analytics_service:
             "success_requests": success_requests,
             "failed_requests": failed_requests
         }
+    
+    @staticmethod
+
+    def get_requests(user_id:int , db):
+
+        requests = (
+            db.query(Request)
+            .filter(Request.user_id == user_id)
+            .all()
+        )
+
+        return requests

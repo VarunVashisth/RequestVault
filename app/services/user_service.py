@@ -73,7 +73,15 @@ class userservices():
            
         
         return log_user
+    
+    @staticmethod
+    def validate_api_key(api : str , db) :
+       
+       val_api = (
+          db.query(user).filter(user.api_key == api).first()
+       )
 
+       return val_api
 
 
     

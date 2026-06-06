@@ -10,6 +10,10 @@ router = APIRouter()
 @router.get("/requests", response_model=list[RequestResponse])
 def get_requests(
     api_key: str,
+    search : str | None=None,
+    status_code : int | None=None,
+    cursor: int | None=None,
+    limit: int = 20,
     db: Session = Depends(get_db)
 ):
     
@@ -18,6 +22,6 @@ def get_requests(
     if not user:
         raise HTTPException(status_code= 401 , detail="invalid API")
 
-    requests = analytics_service.get_requests(user.id, db)
+    requests = analytics_service.get_requests(user.id , search , status_code ,cursor , limit , db)
 
     return requests

@@ -1,5 +1,5 @@
 from sqlalchemy import func
-
+from typing import Annotated
 from ..db_models.user import user
 from ..db_models.requests import Request
 
@@ -68,12 +68,27 @@ class analytics_service:
     
     @staticmethod
 
-    def get_requests(user_id:int , db):
-
-        requests = (
+    def get_requests(user_id:int , search:str , status_code:int, cursor : int , limit:int , db):
+        search_req = (
             db.query(Request)
             .filter(Request.user_id == user_id)
-            .all()
         )
 
-        return requests
+        if search :
+            search_req = search_req.filter(Request.endpoint.ilike(f"%{search}%"))
+
+        if status_code :
+            search_req = search_req.filter(Request.status_code == status_code)
+
+
+        if cursor:
+            search_req = search_req.filter(Request.id > cursor).order_by(Request.id)
+                
+        search_req = search_req.limit(limit)
+
+
+        return search_req.all()
+
+        
+
+

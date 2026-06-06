@@ -25,3 +25,27 @@ def get_requests(
     requests = analytics_service.get_requests(user.id , search , status_code ,cursor , limit , db)
 
     return requests
+
+
+@router.delete("/requests/{request_id}")
+def delete_request(
+    request_id: int,
+    api_key: str,
+    db: Session = Depends(get_db)
+):
+
+    user = userservices.validate_api_key(api_key, db)
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API Key"
+        )
+
+    result = analytics_service.delete_request(
+        request_id,
+        user.id,
+        db
+    )
+
+    return result

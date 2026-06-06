@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy import func
 from typing import Annotated
 from ..db_models.user import user
@@ -88,7 +89,36 @@ class analytics_service:
 
 
         return search_req.all()
-
-        
+    
+    @staticmethod
+    def delete_request(
+        request_id: int,
+        user_id: int,
+        db
+    ):
+    
+        request = (
+            db.query(Request)
+            .filter(
+                Request.id == request_id,
+                Request.user_id == user_id
+            )
+            .first()
+        )
+    
+        if not request:
+            raise HTTPException(
+                status_code=404,
+                detail="Request not found"
+            )
+    
+        db.delete(request)
+        db.commit()
+    
+        return {
+            "message": "Request deleted successfully"
+        }
+    
+            
 
 

@@ -19,8 +19,8 @@ class login_user(BaseModel):
 
 #response body
 class logged_user(BaseModel):
-    username : str
-    email : EmailStr
+    access_token : str
+    token_type: str
     
     
 

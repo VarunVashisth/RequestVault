@@ -4,8 +4,11 @@ from datetime import datetime
 
 class RequestResponse(BaseModel):
 
+    method: str
     endpoint: str
     status_code: int
+    ip_address: str
+    useragent: str
     response_time: int
     created_at: datetime
 

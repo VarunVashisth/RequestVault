@@ -11,7 +11,9 @@ class Request(base) :
    id: Mapped[int] = mapped_column(primary_key=True)
 
    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-   
+   ip_address: Mapped[str] = mapped_column(String(255))
+   method : Mapped[str] = mapped_column(String(255))
+   useragent : Mapped[str] = mapped_column(String(255))
    endpoint: Mapped[str] = mapped_column(String(255))
    status_code: Mapped[int]
    response_time : Mapped[int]

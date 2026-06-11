@@ -1,4 +1,4 @@
-from fastapi import APIRouter , Depends , HTTPException
+from fastapi import APIRouter , Depends , HTTPException , Request
 from sqlalchemy.orm import Session
 from ..db.dependency import get_db
 from ..SchemaModels.capture_model import capture_model
@@ -10,14 +10,21 @@ router = APIRouter()
 
 @router.post("/capture" , response_model=capture_response)
 
-def capture_request(request:capture_model  , db : Session = Depends(get_db) ) :
+def capture_request(request_data:capture_model , request: Request , db : Session = Depends(get_db) ) :
         
-        check = capture_service.check(request.api_key , db)
-        
+        check = capture_service.check(request_data.api_key , db)
+        forwaded_for = request.headers.get("x-forwarded-for")
+        if forwaded_for:
+            ip = forwaded_for.split(",")[0].strip()
+        else:
+            ip = request.client.host if request.client else "Unknown"
+
         if not check:
                 raise HTTPException(status_code=401 , detail="api_key mismatch") 
+        useragnet = request.headers.get("user-agent")
+        method = request.method
         
-        result = capture_service.capture(check.id , request.endpoint , request.status_code , request.response_time_ms,db)
+        result = capture_service.capture(check.id , request_data.endpoint , request_data.status_code , request_data.response_time_ms, ip ,useragnet , method , db)
         
         return result
 

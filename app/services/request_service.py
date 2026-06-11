@@ -15,9 +15,10 @@ class capture_service():
         return check_user
     
     @staticmethod
-    def capture(id:int , endpoint:str , status_code:int , response_time: int , db):
+    def capture(id:int , endpoint:str , status_code:int , response_time: int , ip:str , user_agent:str ,  method:str , db):
 
-        capture = Request(user_id = id , endpoint = endpoint , status_code = status_code , response_time = response_time)
+
+        capture = Request(user_id = id ,ip_address =ip, method = method , endpoint = endpoint , status_code = status_code , useragent = user_agent, response_time = response_time)
 
         db.add(capture)
         db.commit()

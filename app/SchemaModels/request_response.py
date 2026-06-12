@@ -10,6 +10,10 @@ class RequestResponse(BaseModel):
     ip_address: str
     useragent: str
     response_time: int
+    request_body: dict | None
+    response_body: dict | None
+    request_headers: dict | None
+    response_headers: dict | None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

@@ -7,6 +7,11 @@ class capture_model(BaseModel):
     endpoint : str
     status_code: int
     response_time_ms:int
+    request_body: dict | None = None
+    response_body: dict | None = None
+    request_headers: dict | None = None
+    response_headers: dict | None = None
+
     
 
 #response body

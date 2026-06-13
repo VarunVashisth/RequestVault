@@ -1,5 +1,6 @@
 from pydantic import BaseModel , ConfigDict
 from datetime import datetime
+from typing import Any
 
 
 class RequestResponse(BaseModel):
@@ -10,8 +11,8 @@ class RequestResponse(BaseModel):
     ip_address: str
     useragent: str
     response_time: int
-    request_body: dict | None
-    response_body: dict | None
+    request_body: Any = None
+    response_body: Any = None
     request_headers: dict | None
     response_headers: dict | None
     created_at: datetime

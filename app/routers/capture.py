@@ -4,6 +4,7 @@ from ..db.dependency import get_db
 from ..SchemaModels.capture_model import capture_model
 from ..SchemaModels.capture_model import capture_response
 from ..services.request_service import capture_service , sanitize_body
+from ..services import rate_limit_service
 
 
 router = APIRouter()
@@ -25,6 +26,14 @@ def capture_request(
         raise HTTPException(
             status_code=401,
             detail="api_key mismatch"
+        )
+    
+    if not rate_limit_service.check_rate_limit(
+        request_data.api_key
+    ):
+        raise HTTPException(
+            status_code = 429,
+            detail="Rate Limit Exceeded"
         )
 
     forwarded_for = request.headers.get(

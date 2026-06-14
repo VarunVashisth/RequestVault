@@ -13,7 +13,7 @@ class Request(base) :
    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
    ip_address: Mapped[str] = mapped_column(String(255))
    method : Mapped[str] = mapped_column(String(20))
-   useragent : Mapped[str] = mapped_column(Text)
+   useragent : Mapped[str] = mapped_column(Text , nullable=True)
    endpoint: Mapped[str] = mapped_column(Text)
    status_code: Mapped[int]
    response_time : Mapped[int]

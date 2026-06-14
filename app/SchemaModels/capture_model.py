@@ -29,7 +29,7 @@ class capture_response(BaseModel):
     status_code: int
     response_time:int
     ip_address: str
-    useragent: str
+    useragent: str | None=None
     created_at : datetime
 
 

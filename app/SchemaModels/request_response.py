@@ -9,7 +9,7 @@ class RequestResponse(BaseModel):
     endpoint: str
     status_code: int
     ip_address: str
-    useragent: str
+    useragent: str | None
     response_time: int
     request_body: Any = None
     response_body: Any = None

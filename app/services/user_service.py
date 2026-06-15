@@ -68,20 +68,22 @@ class userservices():
     @staticmethod
     def log_user(email:str , password:str , db):
 
-        log_user = (
-            db.query(user).filter(user.email == email ).first()
+        user_obj = (
+            db.query(user)
+            .filter(user.email == email)
+            .first()
         )
-
-        if not log_user:
-         return("user not found")
-
-        try:
-            password_hash.verify(password, log_user.password_hash)
-        except Exception :
-           return("invalid password")
-           
-        
-        return log_user
+    
+        if not user_obj:
+            return None
+    
+        if not password_hash.verify(
+            password,
+            user_obj.password_hash
+        ):
+            return None
+    
+        return user_obj
     
     @staticmethod
     def validate_api_key(api : str , db) :

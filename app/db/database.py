@@ -1,15 +1,16 @@
 from sqlalchemy import create_engine  
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import DeclarativeBase , sessionmaker
-
+from ..core.settings import settings
 
 class base(DeclarativeBase):
    pass
 
 try:
-  DATABASE_URL = ("postgresql+psycopg://postgres:123456789@localhost:5432/request_vault")
+  
+  print(type(settings.DATABASE_URL))
 
-  engine = create_engine(DATABASE_URL)
+  engine = create_engine(settings.DATABASE_URL)
 
   with engine.connect() as conn:
      print("Connection was Successfull")

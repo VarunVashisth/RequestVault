@@ -1,4 +1,4 @@
-from pydantic import BaseModel , EmailStr , StringConstraints
+from pydantic import BaseModel ,  StringConstraints
 from typing import Annotated
 
 strictusername = Annotated[
@@ -13,7 +13,6 @@ strictusername = Annotated[
 
 class register_username(BaseModel):
     username : strictusername 
-    email : EmailStr
     password : str
 
 

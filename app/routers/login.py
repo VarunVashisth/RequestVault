@@ -10,7 +10,7 @@ router = APIRouter()
 
 def login_request(user:login_user , db: Session = Depends(get_db)) : 
 
-    result = userservices.log_user(user.email , user.password , db)
+    result = userservices.log_user(user.username , user.password , db)
 
     if not result:
         raise HTTPException(status_code=401 , detail="No Account found with that credentials")

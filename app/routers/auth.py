@@ -10,6 +10,5 @@ def get_me(
 ):
     return {
         "id": current_user.id,
-        "email": current_user.email,
         "username": current_user.username
     }

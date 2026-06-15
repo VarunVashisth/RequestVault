@@ -9,7 +9,7 @@ class user(base) :
 
    id: Mapped[int] = mapped_column(Integer , primary_key=True)
    username: Mapped[str] = mapped_column(String(255), unique=True)
-   email: Mapped[str] = mapped_column(String(255), unique=True)
+   email: Mapped[str] = mapped_column(String(255) , nullable=True)
    password_hash: Mapped[str] = mapped_column(String(255))
    api_key: Mapped[Optional[str]] = mapped_column(String(255) , nullable=True , unique = True)
    created_at: Mapped[datetime] = mapped_column(

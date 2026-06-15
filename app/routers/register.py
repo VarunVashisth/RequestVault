@@ -1,123 +1,30 @@
-from fastapi import APIRouter , Depends , HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from ..db.dependency import get_db
-from ..SchemaModels.register_request import register_username 
+from ..SchemaModels.register_request import register_username
 from ..SchemaModels.register_response import registered_username
 from ..services.user_service import userservices
-from ..services.email_service import send_registration_otp
-from ..SchemaModels.register_otp import (
-    RequestOTP,
-    VerifyOTP
-)
-from ..db_models.email_verification import RegistrationOTP
-
 
 router = APIRouter()
 
 
-
-@router.post("/register/request-otp")
-def request_otp(
-    payload: RequestOTP,
-    db: Session = Depends(get_db)
-):
-
-    check = userservices.validate_user_registration(
-        payload.username,
-        payload.email,
-        db
-    )
-
-    if check != "username and email are available":
-
-        raise HTTPException(
-            status_code=400,
-            detail=check
-        )
-
-    otp = userservices.generate_registration_otp(
-        payload.email,
-        db
-    )
-
-    if otp == "wait_before_requesting":
-
-        raise HTTPException(
-            status_code=429,
-            detail="Please wait before requesting another OTP"
-        )
-
-    try:
-
-        print(f"ATTEMPTING TO SEND OTP TO: {payload.email}")
-
-        send_registration_otp(
-            payload.email,
-            otp
-        )
-
-        print("EMAIL SENT SUCCESSFULLY")
-
-    except Exception as e:
-
-        existing = (
-            db.query(RegistrationOTP)
-            .filter(
-                RegistrationOTP.email == payload.email
-            )
-            .first()
-        )
-
-        if existing:
-            db.delete(existing)
-            db.commit()
-
-        print("===================================")
-        print("EMAIL ERROR:", str(e))
-        print("===================================")
-
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to send verification email"
-        )
-
-    return {
-        "message": "verification code sent"
-    }
-    
-
 @router.post(
-    "/register/verify-otp",
+    "/register",
     response_model=registered_username
 )
-def verify_otp_register(
-    payload: VerifyOTP,
+def register(
+    payload: register_username,
     db: Session = Depends(get_db)
 ):
 
-    result = (
-        userservices.verify_registration_otp(
-            payload.email,
-            payload.otp,
-            db
-        )
-    )
-
-    if result is not True:
-
-        raise HTTPException(
-            status_code=400,
-            detail=result
-        )
-    
     check = userservices.validate_user_registration(
         payload.username,
-        payload.email,
         db
     )
-    
-    if check != "username and email are available":
-    
+
+    if check != "username is available":
+
         raise HTTPException(
             status_code=400,
             detail=check
@@ -125,7 +32,6 @@ def verify_otp_register(
 
     reg = userservices.create_user(
         payload.username,
-        payload.email,
         payload.password,
         db
     )
@@ -136,7 +42,3 @@ def verify_otp_register(
     )
 
     return api_gen
-
-    
-    
-    

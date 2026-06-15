@@ -1,4 +1,4 @@
-from pydantic import BaseModel , EmailStr , StringConstraints
+from pydantic import BaseModel  , StringConstraints
 from typing import Annotated
 
 strictusername = Annotated[
@@ -13,7 +13,7 @@ strictusername = Annotated[
 
 #request body
 class login_user(BaseModel):
-    email : EmailStr
+    username : str
     password : str
     
 

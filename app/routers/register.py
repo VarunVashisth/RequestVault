@@ -9,6 +9,7 @@ from ..SchemaModels.register_otp import (
     RequestOTP,
     VerifyOTP
 )
+from ..db_models.email_verification import RegistrationOTP
 
 
 router = APIRouter()
@@ -46,23 +47,41 @@ def request_otp(
         )
 
     try:
-    
+
+        print(f"ATTEMPTING TO SEND OTP TO: {payload.email}")
+
         send_registration_otp(
             payload.email,
             otp
         )
-    
-    except Exception as e :
-        
+
+        print("EMAIL SENT SUCCESSFULLY")
+
+    except Exception as e:
+
+        existing = (
+            db.query(RegistrationOTP)
+            .filter(
+                RegistrationOTP.email == payload.email
+            )
+            .first()
+        )
+
+        if existing:
+            db.delete(existing)
+            db.commit()
+
+        print("===================================")
         print("EMAIL ERROR:", str(e))
+        print("===================================")
+
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to send verification email"
+            detail="Failed to send verification email"
         )
 
     return {
-        "message":
-        "verification code sent"
+        "message": "verification code sent"
     }
     
 

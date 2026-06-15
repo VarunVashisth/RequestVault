@@ -8,7 +8,6 @@ class base(DeclarativeBase):
 
 try:
   
-  print(type(settings.DATABASE_URL))
 
   engine = create_engine(settings.DATABASE_URL)
 

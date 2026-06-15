@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-class analytics_request(BaseModel):
-    api_key: str
 
 
 class analytics_response(BaseModel):

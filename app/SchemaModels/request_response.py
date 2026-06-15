@@ -18,3 +18,14 @@ class RequestResponse(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class AnalyticResponse(BaseModel):
+
+    method: str
+    endpoint: str
+    status_code: int
+    ip_address: str
+    response_time: int
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)

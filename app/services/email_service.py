@@ -1,9 +1,9 @@
-import resend
+import smtplib
+
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from ..core.settings import settings
-
-resend.api_key = settings.RESEND_API_KEY
-
 
 
 def send_registration_otp(
@@ -11,50 +11,45 @@ def send_registration_otp(
     otp: str
 ):
 
-    resend.Emails.send(
-        {
-            "from": "RequestVault <onboarding@resend.dev>",
-            "to": [email],
-            "subject": "RequestVault Verification Code",
-            "html": f"""
-            <div
-                style="
-                font-family:Arial,sans-serif;
-                max-width:600px;
-                margin:auto;
-                "
-            >
+    message = MIMEMultipart()
 
-                <h2>
-                    RequestVault Email Verification
-                </h2>
+    message["From"] = settings.SMTP_EMAIL
+    message["To"] = email
+    message["Subject"] = "RequestVault Verification Code"
 
-                <p>
-                    Your verification code is:
-                </p>
+    html = f"""
+    <div style="font-family:Arial,sans-serif">
 
-                <div
-                    style="
-                    font-size:32px;
-                    font-weight:bold;
-                    letter-spacing:4px;
-                    margin:20px 0;
-                    "
-                >
-                    {otp}
-                </div>
+        <h2>RequestVault Email Verification</h2>
 
-                <p>
-                    This code expires in
-                    10 minutes.
-                </p>
+        <p>Your verification code is:</p>
 
-                <p>
-                    If you didn't request this,
-                    you can ignore this email.
-                </p>
+        <h1>{otp}</h1>
 
-            </div>
-            """
-        }
+        <p>
+            This code expires in 5 minutes.
+        </p>
+
+    </div>
+    """
+
+    message.attach(
+        MIMEText(
+            html,
+            "html"
+        )
     )
+
+    with smtplib.SMTP(
+        "smtp.gmail.com",
+        587
+    ) as server:
+
+        server.starttls()
+
+        server.login(
+            settings.SMTP_EMAIL,
+            settings.SMTP_PASSWORD
+        )
+
+        server.send_message(message)

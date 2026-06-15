@@ -15,6 +15,7 @@ from ..db_models.email_verification import RegistrationOTP
 router = APIRouter()
 
 
+
 @router.post("/register/request-otp")
 def request_otp(
     payload: RequestOTP,

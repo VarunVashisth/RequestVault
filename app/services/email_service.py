@@ -1,5 +1,5 @@
 import smtplib
-
+import socket
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -40,9 +40,17 @@ def send_registration_otp(
         )
     )
 
+    
+    try:
+        ip = socket.gethostbyname("smtp.gmail.com")
+        print("SMTP IP:", ip)
+    except Exception as e:
+        print("DNS ERROR:", str(e))
+    
+
     with smtplib.SMTP(
         "smtp.gmail.com",
-        587
+        465
     ) as server:
 
         server.starttls()

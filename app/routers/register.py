@@ -52,8 +52,9 @@ def request_otp(
             otp
         )
     
-    except Exception :
-    
+    except Exception as e :
+        
+        print("EMAIL ERROR:", str(e))
         raise HTTPException(
             status_code=500,
             detail=f"Failed to send verification email"

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from  ..auth.dependencies import get_current_user
 from ..db.dependency import get_db
-from ..SchemaModels.analytic_model import  analytics_response
-
+from ..SchemaModels.analytic_model import  analytics_response , TopEndpointResponse
+from ..SchemaModels.request_response import AnalyticResponse
 from ..services.analytic_service import analytics_service
 
 router = APIRouter()
@@ -36,7 +36,7 @@ def get_status_distribution(
     )
 
 
-@router.get("/analytics/top-endpoints" , response_model=analytics_response)
+@router.get("/analytics/top-endpoints" , response_model= list[TopEndpointResponse])
 def get_top_endpoints(
     limit: int = 5,
     current_user=Depends(get_current_user),
@@ -74,7 +74,7 @@ def get_request_volume(
     )
 
 
-@router.get("/analytics/recent" , response_model=analytics_response)
+@router.get("/analytics/recent" , response_model= list[AnalyticResponse])
 def get_recent_requests(
     limit: int = 10,
     current_user=Depends(get_current_user),
@@ -100,7 +100,7 @@ def get_errors(
     )
 
 
-@router.get("/analytics/slow-endpoints" , response_model=analytics_response)
+@router.get("/analytics/slow-endpoints")
 def get_slow_endpoints(
     limit: int = 5,
     current_user=Depends(get_current_user),

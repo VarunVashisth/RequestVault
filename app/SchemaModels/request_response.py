@@ -20,7 +20,8 @@ class RequestResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class AnalyticResponse(BaseModel):
-
+    
+    id:int
     method: str
     endpoint: str
     status_code: int

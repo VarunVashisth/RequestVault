@@ -68,7 +68,7 @@ class analytics_service:
 
         return {
             "total_requests": total_requests,
-            "avg_response_time": avg_response_time,
+            "avg_response_time": int(avg_response_time),
             "success_requests": success_requests,
             "failed_requests": failed_requests
         }
@@ -84,7 +84,7 @@ class analytics_service:
         limit: int,
         db
     ):
-        
+    
         if limit > 100:
             limit = 100
     
@@ -100,14 +100,42 @@ class analytics_service:
                 )
             )
     
+        # FIX 1: Status ranges instead of exact match
         if status_code is not None:
-            query = query.filter(
-                Request.status_code == status_code
-            )
     
+            if status_code == 200:
+                query = query.filter(
+                    Request.status_code >= 200,
+                    Request.status_code < 300
+                )
+    
+            elif status_code == 300:
+                query = query.filter(
+                    Request.status_code >= 300,
+                    Request.status_code < 400
+                )
+    
+            elif status_code == 400:
+                query = query.filter(
+                    Request.status_code >= 400,
+                    Request.status_code < 500
+                )
+    
+            elif status_code == 500:
+                query = query.filter(
+                    Request.status_code >= 500
+                )
+    
+            else:
+                query = query.filter(
+                    Request.status_code == status_code
+                )
+    
+        # FIX 2: Case-insensitive method filtering
         if method:
             query = query.filter(
-                Request.method == method.upper()
+                func.upper(Request.method)
+                == method.upper()
             )
     
         if sort not in ["asc", "desc"]:
@@ -115,7 +143,7 @@ class analytics_service:
     
         if sort == "asc":
     
-            if cursor:
+            if cursor is not None:
                 query = query.filter(
                     Request.id > cursor
                 )
@@ -126,7 +154,7 @@ class analytics_service:
     
         else:
     
-            if cursor:
+            if cursor is not None:
                 query = query.filter(
                     Request.id < cursor
                 )

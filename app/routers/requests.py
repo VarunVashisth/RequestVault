@@ -50,22 +50,7 @@ def get_request_by_id(
 
     return request
 
-@router.delete("/requests/{request_id}")
-def delete_request(
-    request_id: int,
-    current_user = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
 
-
-
-    result = analytics_service.delete_request(
-        request_id,
-        current_user.id,
-        db
-    )
-
-    return result
 
 @router.delete("/requests/bulk")
 def delete_all_requests(
@@ -90,3 +75,20 @@ def delete_failed_requests(
         current_user.id,
         db
     )
+
+@router.delete("/requests/{request_id}")
+def delete_request(
+    request_id: int,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+
+
+    result = analytics_service.delete_request(
+        request_id,
+        current_user.id,
+        db
+    )
+
+    return result

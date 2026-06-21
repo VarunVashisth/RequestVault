@@ -1,15 +1,12 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.db.init_db import init_db
-from app.routers import register , login , capture ,analytics , requests , auth , api_key
+from app.routers import register , login , capture ,analytics , requests , auth , api_key , ai_analytics
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://requestvault-ten.vercel.app"
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,6 +19,7 @@ app.include_router(analytics.router)
 app.include_router(requests.router)
 app.include_router(auth.router)
 app.include_router(api_key.router)
+app.include_router(ai_analytics.router)
 
 
 @app.on_event("startup")
